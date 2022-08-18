@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {validBirthday, validLink, validRequired} from "../helpers/validate";
+import {Link} from "react-router-dom";
 
 const AddStudent = () => {
 
@@ -7,6 +8,7 @@ const AddStudent = () => {
     const [lastName, setLastName] = useState({value: "qweqe", formError: false})
     const [birthday, setBirthday] = useState({value: "222", formError: false, isValidBirthday: true})
     const [portfolio, setPortfolio] = useState({value: "", formError: false, isValidLink: true})
+    const [modal, setModal] = useState(false)
 
     const time = new Date()
     const RegExp = /^(http:\/\/|https:\/\/)[a-zA-Z0-9\-_$]+\.[a-zA-Z]{2,5}$/g
@@ -101,61 +103,109 @@ const AddStudent = () => {
             firstName: firstName.value,
             lastName: lastName.value,
             birthday: birthday.value,
-            portfolio: portfolio.value
+            portfolio: portfolio.value,
+            id: Date.now()
         }]
-        localStorage.setItem("studentData",JSON.stringify(newData))
+        localStorage.setItem("studentData", JSON.stringify(newData))
+        setModal(true)
+        console.log({modal})
         // console.log("submit", firstName, lastName, birthday, portfolio)
         // onResetForm()
     }
+
+    if (modal) {
+      return  <Modal/>
+    }
     return (
-        <div className="container">
-            <h2>Карточка студента</h2>
-            <form onSubmit={onSubmitForm}>
-                <div className="mb-3">
-                    <label htmlFor="firstName" className="form-label">Имя</label>
-                    <input type="text"
-                           className="form-control"
-                           id="firstName"
-                           name="firstName"
-                           placeholder="Имя"
-                           value={firstName.value}
-                           onChange={onChangeFirstName}
-                    />
-                    <div className="text-danger"> {firstName.value.length === 0 && validRequired("Имя")}</div>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="lastName" className="form-label">Фамилия</label>
-                    <input type="text" className="form-control" id="lastName"
-                           placeholder="Фамилия"
-                           value={lastName.value}
-                           onChange={onChangeLastName}
-                    />
-                    <div className="text-danger"> {lastName.value.length === 0 && validRequired("Фамилия")}</div>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="birthday" className="form-label">Год рождения</label>
-                    <input type="number" className="form-control" id="birthday"
-                           placeholder="2000"
-                           value={birthday.value}
-                           onChange={onChangeBirthday}
+        <> {modal && <Modal/>}
+            <Modal/>
+            <div className="container">
+                <div className="modal" tabIndex="-1">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
 
-                    />
-                    <div className="text-danger"> {!birthday.value ? validRequired("Год рождения"):!birthday.isValidBirthday && validBirthday("Год рождения") }</div>
+                            <div className="modal-body">
+                                <p>Обновленно!</p>
+                            </div>
+                            <div className="modal-footer">
+                                <Link to={"/"}>Закрыть</Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="portfolio" className="form-label">Портфолио</label>
-                    <input type="text" className="form-control" id="portfolio"
-                           placeholder="https://....."
-                           value={portfolio.value}
-                           onChange={onChangePortfolio}
-                    />
-                    <div className="text-danger"> {portfolio.value.length === 0 ? validRequired("Портфолио") : !portfolio.isValidLink && validLink("Портфолио")}</div>
-                </div>
+                <h2>Карточка студента</h2>
+                <form onSubmit={onSubmitForm}>
+                    <div className="mb-3">
+                        <label htmlFor="firstName" className="form-label">Имя</label>
+                        <input type="text"
+                               className="form-control"
+                               id="firstName"
+                               name="firstName"
+                               placeholder="Имя"
+                               value={firstName.value}
+                               onChange={onChangeFirstName}
+                        />
+                        <div className="text-danger"> {firstName.value.length === 0 && validRequired("Имя")}</div>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="lastName" className="form-label">Фамилия</label>
+                        <input type="text" className="form-control" id="lastName"
+                               placeholder="Фамилия"
+                               value={lastName.value}
+                               onChange={onChangeLastName}
+                        />
+                        <div className="text-danger"> {lastName.value.length === 0 && validRequired("Фамилия")}</div>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="birthday" className="form-label">Год рождения</label>
+                        <input type="number" className="form-control" id="birthday"
+                               placeholder="2000"
+                               value={birthday.value}
+                               onChange={onChangeBirthday}
 
-                <button className="btn btn-primary" type={"submit"}>Создать</button>
-            </form>
-        </div>
-    );
+                        />
+                        <div
+                            className="text-danger"> {!birthday.value ? validRequired("Год рождения") : !birthday.isValidBirthday && validBirthday("Год рождения")}</div>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="portfolio" className="form-label">Портфолио</label>
+                        <input type="text" className="form-control" id="portfolio"
+                               placeholder="https://....."
+                               value={portfolio.value}
+                               onChange={onChangePortfolio}
+                        />
+                        <div
+                            className="text-danger"> {portfolio.value.length === 0 ? validRequired("Портфолио") : !portfolio.isValidLink && validLink("Портфолио")}</div>
+                    </div>
+
+                    <button className="btn btn-primary" type={"submit"}>Создать</button>
+                </form>
+            </div>
+
+        </>
+    )
 };
 
 export default AddStudent;
+
+export const Modal = ({}) => {
+    return (
+        <div className="modal" tabIndex="-1">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title">Modal title</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div className="modal-body">
+                        <p>Modal body text goes here.</p>
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
