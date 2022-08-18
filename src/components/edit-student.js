@@ -27,8 +27,8 @@ const EditStudent = () => {
                 </div>
 
                 <div>
-                    <button>Назад</button>
-                    <button>Редактировать</button>
+                    <button className="btn btn-dark me-2">Назад</button>
+                    <button className="btn btn-primary">Редактировать</button>
                 </div>
             </form>
         </div>
