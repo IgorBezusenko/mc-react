@@ -7,31 +7,26 @@ import AddStudent from "./components/add-student";
 import EditStudent from "./components/edit-student";
 import MainPage from "./components/main-page";
 import './App.css';
+import {Layout} from "./components/Layout";
 
 function App() {
     return (
-        <BrowserRouter>
-            <div className="App">
-                <Routes>
 
-                        <Route  path="/" element={<MainPage />} />
+        <div className="App">
+            <Routes>
+                <Route path="/" element={<Layout/>}>
+                    <Route index element={<MainPage/>}/>
+                    <Route  path={"students"}>
+                        <Route index={false} path="add" element={<AddStudent/>}/>
+                        <Route index={false} path="edit/:id" element={<EditStudent/>}/>
+                    </Route>
 
-                        <Route  path="/add-students" element={<AddStudent/>}/>
-                        <Route path="/edit-students" element={<EditStudent/>}/>
-                        <Route path="*" element={<div>Error page 404</div>} />
+                    <Route path="*" element={<div>Error page 404</div>}/>
+                </Route>
+            </Routes>
 
-                </Routes>
-                {/*<Routes>*/}
-                {/*    <Route exact path="/" component={MainPage}/>*/}
+        </div>
 
-                {/*    <Route path="/add-students" component={AddStudent}/>*/}
-                {/*    <Route path="/edit-students" component={EditStudent}/>*/}
-                {/*</Routes>*/}
-                {/*<MainPage/>*/}
-                {/*<AddStudent/>*/}
-                {/*<EditStudent/>*/}
-            </div>
-        </BrowserRouter>
     );
 }
 

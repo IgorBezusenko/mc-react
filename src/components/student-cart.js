@@ -1,13 +1,41 @@
-const StudentCart = ({firstName, lastName, birthday, portfolio}) => {
+import {useMemo} from "react";
+import {Link} from "react-router-dom";
+
+const StudentCart = ({firstName, lastName, birthday, portfolio, id}) => {
+    const time = new Date()
+    const currentYear = time.getFullYear()
+    const studentYear = currentYear - (+birthday)
+    const birthLastEl = studentYear.toString().length - 1
+    const years = studentYear.toString().charAt(birthLastEl)
+
+    const calculation = useMemo(() => {
+        switch (years) {
+            case "1":
+                return "год"
+            case "2":
+            case "3":
+            case "4":
+                return "года"
+            case "5":
+            case "6":
+            case "7":
+            case "8":
+            case "9":
+            case "0":
+                return "лет"
+            default :
+                break;
+        }
+    }, [years])
+
     return (
         <div className="card me-1 mb-1" style={{width: "18rem"}}>
             <div className="card-body">
                 <div><b className="card-title">Имя: </b> <span>{firstName}</span></div>
                 <div><b className="card-title">Фамилия: </b> <span>{lastName}</span></div>
-                <div><b className="card-title">Год рождения: </b> <span>{birthday}</span></div>
+                <div><b className="card-title">Год рождения: </b> <span>{studentYear} ({calculation})</span></div>
                 <div><b className="card-title">Портфолио: </b> <span>{portfolio}</span></div>
-                <button className="btn btn-dark me-2">Назад</button>
-                <button className="btn btn-primary">Редактировать</button>
+                <Link to={`/students/edit/:${id}`} className="btn btn-primary">Редактировать</Link>
             </div>
         </div>
     );

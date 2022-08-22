@@ -11,10 +11,9 @@ const MainPage = () => {
         }
     }, [])
 
-    console.log(studentData)
     return (
         <div>
-            <Link className="btn btn-primary mb-2" to={"/add-students"}>Добавить студента</Link>
+            <Link className="btn btn-primary mb-2" to="/students/add">Добавить студента</Link>
             <div className="d-flex flex-wrap">
                 {studentData.length > 0 && studentData.map(item => (
 
@@ -23,6 +22,7 @@ const MainPage = () => {
                                      lastName={item.lastName}
                                      birthday={item.birthday}
                                      portfolio={item.portfolio}
+                                     id={item.id}
                         />
 
                     )
