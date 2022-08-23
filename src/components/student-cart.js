@@ -1,10 +1,9 @@
 import {useMemo} from "react";
 import {Link} from "react-router-dom";
+import {CURRENT_YEAR} from "../helpers/formatDate";
 
 const StudentCart = ({firstName, lastName, birthday, portfolio, id}) => {
-    const time = new Date()
-    const currentYear = time.getFullYear()
-    const studentYear = currentYear - (+birthday)
+    const studentYear = CURRENT_YEAR - (+birthday)
     const birthLastEl = studentYear.toString().length - 1
     const years = studentYear.toString().charAt(birthLastEl)
 
@@ -35,7 +34,7 @@ const StudentCart = ({firstName, lastName, birthday, portfolio, id}) => {
                 <div><b className="card-title">Фамилия: </b> <span>{lastName}</span></div>
                 <div><b className="card-title">Год рождения: </b> <span>{studentYear} ({calculation})</span></div>
                 <div><b className="card-title">Портфолио: </b> <span>{portfolio}</span></div>
-                <Link to={`/students/edit/:${id}`} className="btn btn-primary">Редактировать</Link>
+                <Link to={`/students/edit/${id}`} className="btn btn-primary">Редактировать</Link>
             </div>
         </div>
     );

@@ -6,11 +6,8 @@ export const Modal = ({isModal, closeModal, title}) => {
     useEffect(() => {
         const modal = document.querySelector('.modal')
         if (isModal) {
-            console.log({isModal})
             modal.style.display = "block";
         }
-
-
     }, [])
 
     return (

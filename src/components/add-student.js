@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {validBirthday, validLink} from "../helpers/validate";
 import {Link} from "react-router-dom";
 import {Modal} from "./modal";
@@ -6,36 +6,12 @@ import Field from "./form/field";
 
 const AddStudent = () => {
     const [modal, setModal] = useState(false)
-
     const [formData, setFormData] = useState({
         firstName: {value: "", isRequired: true, isValid: true},
         lastName: {value: "", isRequired: true, isValid: true},
         birthday: {value: "", isRequired: true, isValid: true},
         portfolio: {value: "", isRequired: true, isValid: true}
     });
-
-    const time = new Date()
-    const currentYear = time.getFullYear()
-    const RegExp = /^(http:\/\/|https:\/\/)[a-zA-Z0-9\-_$]+\.[a-zA-Z]{2,5}$/g;
-
-    const onChangeData = (e) => {
-        const {name, value} = e.target
-        if (name === "birthday") {
-            if (value > currentYear) {
-                setFormData(oldVal => ({...oldVal, [name]: {...oldVal[name], value, isValid: false}}))
-            } else {
-                setFormData(oldVal => ({...oldVal, [name]: {...oldVal[name], value, isValid: true}}))
-            }
-        }
-        if (name === "portfolio") {
-            if (!value.match(RegExp)) {
-                setFormData(oldVal => ({...oldVal, [name]: {...oldVal[name], value, isValid: false}}))
-            } else {
-                setFormData(oldVal => ({...oldVal, [name]: {...oldVal[name], value, isValid: true}}))
-            }
-        }
-        setFormData(oldVal => ({...oldVal, [name]: {...oldVal[name], value}}))
-    }
 
     const onResetForm = () => {
         setFormData({
@@ -45,7 +21,6 @@ const AddStudent = () => {
             portfolio: {value: "", isRequired: true, isValid: true}
         })
     }
-
 
     const onSubmitForm = (e) => {
         e.preventDefault()
@@ -61,10 +36,8 @@ const AddStudent = () => {
             portfolio: formData.portfolio.value,
             id: Date.now()
         }]
-
         localStorage.setItem("studentData", JSON.stringify(newData))
         setModal(true)
-
     }
 
     const closeModal = () => {
@@ -77,22 +50,29 @@ const AddStudent = () => {
             <div className="container">
 
                 <h2>Карточка студента</h2>
-                <form onSubmit={onSubmitForm} >
+                <form onSubmit={onSubmitForm}>
 
                     <Field value={formData.firstName.value} id={"firstName"} name={"firstName"}
-                           onChangeData={onChangeData} text={"Имя"}
-                           type={"text"} placeholder={"Имя"}/>
-                    <Field value={formData.lastName.value} id={"lastName"} name={"lastName"} onChangeData={onChangeData}
+                           text={"Имя"}
+                           type={"text"} placeholder={"Имя"}
+                           setFormData={setFormData}/>
+
+                    <Field value={formData.lastName.value} id={"lastName"} name={"lastName"}
                            text={"Фамилия"}
-                           type={"text"} placeholder={"Фамилия"}/>
-                    <Field value={formData.birthday.value} id={"birthday"} name={"birthday"} onChangeData={onChangeData}
+                           type={"text"} placeholder={"Фамилия"}
+                           setFormData={setFormData}/>
+
+                    <Field value={formData.birthday.value} id={"birthday"} name={"birthday"}
                            text={"Год рождения"}
                            type={"number"} placeholder={"2000"} isValid={formData.birthday.isValid}
-                           validCallback={validBirthday}/>
+                           validCallback={validBirthday}
+                           setFormData={setFormData}/>
+
                     <Field value={formData.portfolio.value} id={"portfolio"} name={"portfolio"}
-                           onChangeData={onChangeData} text={"Портфолио"}
+                           text={"Портфолио"}
                            type={"text"} placeholder={"https://....."} isValid={formData.portfolio.isValid}
-                           validCallback={validLink}/>
+                           validCallback={validLink}
+                           setFormData={setFormData}/>
 
 
                     <Link to="/" className="btn btn-dark me-2">Назад</Link>
