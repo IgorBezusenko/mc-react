@@ -7,12 +7,13 @@ export const Modal = ({isModal, closeModal, title}) => {
         const modal = document.querySelector('.modal')
         if (isModal) {
             modal.style.display = "block";
+            modal.style.backgroundColor = "sRGB(0,0,0)"
         }
     }, [])
 
     return (
-        <div className="modal" tabIndex="-1">
-            <div className="modal-dialog">
+        <div className="modal" style={{backgroundColor:"rgba(0, 0, 0,0.5)"}} tabIndex="-1">
+            <div className="modal-dialog " style={{top:"44%"}}>
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">{title}</h5>
