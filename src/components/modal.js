@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {Link} from "react-router-dom";
 
-export const Modal = ({isModal, setModal, title}) => {
+export const Modal = ({isModal, closeModal, title}) => {
 
     useEffect(() => {
         const modal = document.querySelector('.modal')
@@ -12,7 +12,6 @@ export const Modal = ({isModal, setModal, title}) => {
 
 
     }, [])
-    const onClose = () => setModal(false)
 
     return (
         <div className="modal" tabIndex="-1">
@@ -20,11 +19,11 @@ export const Modal = ({isModal, setModal, title}) => {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">{title}</h5>
-                        <Link to={"/"} className="btn-close" onClick={onClose}></Link>
+                        <Link to={"/"} className="btn-close" onClick={closeModal}></Link>
                     </div>
 
                     <div className="modal-footer">
-                        <Link to={"/"} className="btn btn-primary" onClick={onClose}>Закрыть</Link>
+                        <Link to={"/"} className="btn btn-primary" onClick={closeModal}>Закрыть</Link>
                     </div>
                 </div>
             </div>

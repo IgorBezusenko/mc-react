@@ -1,189 +1,99 @@
 import React, {useEffect, useState} from 'react';
-import {validBirthday, validLink, validRequired} from "../helpers/validate";
+import {validBirthday, validLink} from "../helpers/validate";
 import {Link} from "react-router-dom";
 import {Modal} from "./modal";
 import Field from "./form/field";
 
 const AddStudent = () => {
-
-    const [firstName, setFirstName] = useState({value: "qwe", formError: false, isValid: false})
-    const [lastName, setLastName] = useState({value: "qweqe", formError: false, isValid: false})
-    const [birthday, setBirthday] = useState({value: "222", formError: false, isValid: false})
-    const [portfolio, setPortfolio] = useState({value: "", formError: false, isValid: false})
     const [modal, setModal] = useState(false)
 
-    // const [value, setValue] = useState({
-    //     firstName: '',
-    //     lastName: '',
-    //     birthday: '',
-    //     portfolio: ''
-    // });
-    //
-    // const checkErrorField = () => {
-    //     if (!Object.values(value)) {
-    //         return 'error'
-    //     }
-    // }
+    const [formData, setFormData] = useState({
+        firstName: {value: "", isRequired: true, isValid: true},
+        lastName: {value: "", isRequired: true, isValid: true},
+        birthday: {value: "", isRequired: true, isValid: true},
+        portfolio: {value: "", isRequired: true, isValid: true}
+    });
 
     const time = new Date()
-    const RegExp = /^(http:\/\/|https:\/\/)[a-zA-Z0-9\-_$]+\.[a-zA-Z]{2,5}$/g
+    const currentYear = time.getFullYear()
+    const RegExp = /^(http:\/\/|https:\/\/)[a-zA-Z0-9\-_$]+\.[a-zA-Z]{2,5}$/g;
 
-    function onRequiredValues() {
-        if (firstName.value.length !== 0) {
-            setFirstName({...firstName, isValid: true})
-        } else {
-            setFirstName({...firstName, isValid: false})
+    const onChangeData = (e) => {
+        const {name, value} = e.target
+        if (name === "birthday") {
+            if (value > currentYear) {
+                setFormData(oldVal => ({...oldVal, [name]: {...oldVal[name], value, isValid: false}}))
+            } else {
+                setFormData(oldVal => ({...oldVal, [name]: {...oldVal[name], value, isValid: true}}))
+            }
         }
-
-        if (lastName.value.length !== 0) {
-            setLastName({...lastName, formError: true})
-        } else {
-            setLastName({...lastName, formError: false})
+        if (name === "portfolio") {
+            if (!value.match(RegExp)) {
+                setFormData(oldVal => ({...oldVal, [name]: {...oldVal[name], value, isValid: false}}))
+            } else {
+                setFormData(oldVal => ({...oldVal, [name]: {...oldVal[name], value, isValid: true}}))
+            }
         }
-
-        if (!birthday.value) {
-            setBirthday({...birthday, formError: true})
-        } else {
-            setBirthday({...birthday, formError: false})
-        }
-
-        if (portfolio.value.length !== 0) {
-            // console.log("RegExp.test(portfolio1)", portfolio.value.match(RegExp))
-            setPortfolio({...portfolio, formError: true})
-        } else {
-            setPortfolio({...portfolio, formError: false})
-        }
+        setFormData(oldVal => ({...oldVal, [name]: {...oldVal[name], value}}))
     }
 
-    function onValidBirthday() {
-        if (birthday.value > time.getFullYear()) {
-            // console.log("год не  должен быть больше текушего",birthday.value ,time.getFullYear())
-            setBirthday({...birthday, isValid: true})
-        } else {
-            setBirthday({...birthday, isValid: false})
-        }
-    }
-
-    function onValidLink() {
-        if (!portfolio.value.match(RegExp)) {
-            // console.log("RegExp.test(portfolio1)", portfolio.value.match(RegExp))
-            setPortfolio({...portfolio, isValid: true})
-        } else {
-            setPortfolio({...portfolio, isValid: false})
-        }
-    }
-
-    useEffect(() => {
-        onRequiredValues()
-        onValidBirthday()
-        onValidLink()
-
-    }, [firstName.value, lastName.value, birthday.value, portfolio.value])
-
-    const onChangeFirstName = (e) => {
-        setFirstName({...firstName, value: e.target.value})
-    }
-    const onChangeLastName = (e) => {
-        setLastName({...lastName, value: e.target.value})
-    }
-    const onChangeBirthday = (e) => {
-        if (e.target.value > time.getFullYear()) {
-            console.log("год должен быть больше текушего")
-        }
-
-        setBirthday({...birthday, value: e.target.value})
-
-    }
-    const onChangePortfolio = (e) => {
-        setPortfolio({...portfolio, value: e.target.value})
-        // console.log("RegExp.test(portfolio3)", RegExp.test(portfolio))
-
-    }
     const onResetForm = () => {
-
+        setFormData({
+            firstName: {value: "", isRequired: true, isValid: true},
+            lastName: {value: "", isRequired: true, isValid: true},
+            birthday: {value: "", isRequired: true, isValid: true},
+            portfolio: {value: "", isRequired: true, isValid: true}
+        })
     }
+
 
     const onSubmitForm = (e) => {
         e.preventDefault()
-        const isValid = [Object.values(firstName), Object.values(lastName), Object.values(birthday), Object.values(portfolio)].every((el) => !!el === true)
-
+        const isValid = [...Object.values(formData.firstName), ...Object.values(formData.lastName), ...Object.values(formData.birthday), ...Object.values(formData.portfolio)].every((el) => !!el === true)
         if (!isValid) {
-            console.log({isValid})
-
-            console.log("Все поля должны быть заполнены", firstName, lastName, birthday, portfolio)
             return
         }
         const studentData = JSON.parse(localStorage.getItem("studentData")) || []
         const newData = [...studentData, {
-            firstName: firstName.value,
-            lastName: lastName.value,
-            birthday: birthday.value,
-            portfolio: portfolio.value,
+            firstName: formData.firstName.value,
+            lastName: formData.lastName.value,
+            birthday: formData.birthday.value,
+            portfolio: formData.portfolio.value,
             id: Date.now()
         }]
+
         localStorage.setItem("studentData", JSON.stringify(newData))
         setModal(true)
-        console.log({modal})
-        // console.log("submit", firstName, lastName, birthday, portfolio)
-        // onResetForm()
+
     }
 
-    // const onChangeData = e => {
-    //     const {name, value} = e.target;
-    //     setValue(oldValue => ({...oldValue, [name]: value}))
-    // }
-
-
+    const closeModal = () => {
+        setModal(false)
+        onResetForm()
+    }
     return (
         <>
-            {modal && <Modal isModal={modal} setModal={setModal} title={"Студент добавлен!"}/>}
+            {modal && <Modal isModal={modal} closeModal={closeModal} title={"Студент добавлен!"}/>}
             <div className="container">
 
                 <h2>Карточка студента</h2>
-                <form onSubmit={onSubmitForm}>
+                <form onSubmit={onSubmitForm} >
 
-                    <div className="mb-3">
-                        <label htmlFor="firstName" className="form-label">Имя</label>
-                        <input type="text"
-                               className="form-control"
-                               id="firstName"
-                               name="firstName"
-                               placeholder="Имя"
-                               value={firstName.value}
-                               onChange={onChangeFirstName}
-                        />
-                        <div className="text-danger"> {firstName.value.length === 0 && validRequired("Имя")}</div>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="lastName" className="form-label">Фамилия</label>
-                        <input type="text" className="form-control" id="lastName"
-                               placeholder="Фамилия"
-                               value={lastName.value}
-                               onChange={onChangeLastName}
-                        />
-                        <div className="text-danger"> {lastName.value.length === 0 && validRequired("Фамилия")}</div>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="birthday" className="form-label">Год рождения</label>
-                        <input type="number" className="form-control" id="birthday"
-                               placeholder="2000"
-                               value={birthday.value}
-                               onChange={onChangeBirthday}
+                    <Field value={formData.firstName.value} id={"firstName"} name={"firstName"}
+                           onChangeData={onChangeData} text={"Имя"}
+                           type={"text"} placeholder={"Имя"}/>
+                    <Field value={formData.lastName.value} id={"lastName"} name={"lastName"} onChangeData={onChangeData}
+                           text={"Фамилия"}
+                           type={"text"} placeholder={"Фамилия"}/>
+                    <Field value={formData.birthday.value} id={"birthday"} name={"birthday"} onChangeData={onChangeData}
+                           text={"Год рождения"}
+                           type={"number"} placeholder={"2000"} isValid={formData.birthday.isValid}
+                           validCallback={validBirthday}/>
+                    <Field value={formData.portfolio.value} id={"portfolio"} name={"portfolio"}
+                           onChangeData={onChangeData} text={"Портфолио"}
+                           type={"text"} placeholder={"https://....."} isValid={formData.portfolio.isValid}
+                           validCallback={validLink}/>
 
-                        />
-                        <div
-                            className="text-danger"> {!birthday.value ? validRequired("Год рождения") : birthday.isValid && validBirthday("Год рождения")}</div>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="portfolio" className="form-label">Портфолио</label>
-                        <input type="text" className="form-control" id="portfolio"
-                               placeholder="https://....."
-                               value={portfolio.value}
-                               onChange={onChangePortfolio}
-                        />
-                        <div
-                            className="text-danger"> {portfolio.value.length === 0 ? validRequired("Портфолио") : portfolio.isValid && validLink("Портфолио")}</div>
-                    </div>
 
                     <Link to="/" className="btn btn-dark me-2">Назад</Link>
                     <button className="btn btn-primary" type={"submit"}>Создать</button>

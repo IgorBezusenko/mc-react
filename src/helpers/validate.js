@@ -6,6 +6,6 @@ export  function validLink(text) {
 }
 
 export  function validBirthday(text) {
-    return `Поле "${text}" не коректно`
+    return `Поле "${text}" не должно превышать текуший год`
 }
 
