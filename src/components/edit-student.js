@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {validBirthday, validLink} from "../helpers/validate";
 import {Link, useParams} from "react-router-dom";
 import {Modal} from "./modal";
 import Field from "./form/field";
+import {AppContext} from "./app-context/app-context";
 
 const EditStudent = () => {
-    const studentData = JSON.parse(localStorage.getItem("studentData")) || []
     const params = useParams()
+    const {studentData,editStudentData} = useContext(AppContext)
     const [modal, setModal] = useState(false)
     const [formData, setFormData] = useState({
         firstName: {value: "", isRequired: true, isValid: true},
@@ -43,19 +44,15 @@ const EditStudent = () => {
         if (!isValid) {
             return
         }
-        const dataIndex = studentData.findIndex(item => item.id === +params.id)
-
-        const newData = [...studentData.slice(0, dataIndex),
-            {
+        const newItem = {
             firstName: formData.firstName.value,
             lastName: formData.lastName.value,
             birthday: formData.birthday.value,
             portfolio: formData.portfolio.value,
             id: +params.id
-        },
-            ...studentData.slice(dataIndex + 1)
-        ]
-        localStorage.setItem("studentData", JSON.stringify(newData))
+        }
+
+        editStudentData(newItem, +params.id)
         setModal(true)
     }
 

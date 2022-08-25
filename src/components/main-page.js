@@ -1,15 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import StudentCart from "./student-cart";
 import {Link, NavLink} from "react-router-dom";
+import {AppContext} from "./app-context/app-context";
 
 const MainPage = () => {
-    const [studentData, setStudentData] = useState([])
-    const items = JSON.parse(localStorage.getItem("studentData"))
-    useEffect(() => {
-        if (items) {
-            setStudentData(items)
-        }
-    }, [])
+    const {studentData} = useContext(AppContext)
+    console.log({studentData})
+    // const [studentData, setStudentData] = useState([])
+    // const items = JSON.parse(localStorage.getItem("studentData"))
+    // useEffect(() => {
+    //     if (items) {
+    //         setStudentData(items)
+    //     }
+    // }, [])
 
     return (
         <div>

@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {validBirthday, validLink} from "../helpers/validate";
 import {Link} from "react-router-dom";
 import {Modal} from "./modal";
 import Field from "./form/field";
+import {AppContext} from "./app-context/app-context";
 
 const AddStudent = () => {
+    const { addStudentData} = useContext(AppContext)
     const [modal, setModal] = useState(false)
     const [formData, setFormData] = useState({
         firstName: {value: "", isRequired: true, isValid: true},
@@ -21,22 +23,22 @@ const AddStudent = () => {
             portfolio: {value: "", isRequired: true, isValid: true}
         })
     }
-
     const onSubmitForm = (e) => {
         e.preventDefault()
         const isValid = [...Object.values(formData.firstName), ...Object.values(formData.lastName), ...Object.values(formData.birthday), ...Object.values(formData.portfolio)].every((el) => !!el === true)
         if (!isValid) {
             return
         }
-        const studentData = JSON.parse(localStorage.getItem("studentData")) || []
-        const newData = [...studentData, {
+
+        const newItem = {
             firstName: formData.firstName.value,
             lastName: formData.lastName.value,
             birthday: formData.birthday.value,
             portfolio: formData.portfolio.value,
             id: Date.now()
-        }]
-        localStorage.setItem("studentData", JSON.stringify(newData))
+        }
+
+        addStudentData(newItem)
         setModal(true)
     }
 
